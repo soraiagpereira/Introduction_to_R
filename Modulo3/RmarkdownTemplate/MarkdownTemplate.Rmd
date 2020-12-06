@@ -1,0 +1,149 @@
+---
+title: "Um template de R Markdown"
+author: "Tiago A. Marques e Soraia Pereira"
+date: "1/27/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown
+
+Este é um documento de R Markdown, que tem a extenção ".Rmd". O Markdown é uma sintaxe de formatação para criar facilmente documentos HTML. Na realidade, permite também criar PDFs e até documentos de Word, mas não nos vamos abordar esses formatos neste template. Estes HTML serão documentos dinâmicos, na medida em que se baseiam em dados, e quando os dados mudam, os documentos mudam também. Serão apresentados exemplos deste comportamento dinâmico baixo.
+
+Para mais detalhes sobre o uso do R Markdown existem muito recursos online. Destes salientamos:
+
+* <http://rmarkdown.rstudio.com> Analyze. Share. Reproduce. Your data tells a story. Tell it with R Markdown. Turn your analyses into high quality documents, reports, presentations and dashboards;
+* <https://bookdown.org/yihui/bookdown/> Como escrever livros inteiros em Markdown, bookdown: Authoring Books and Technical Documents with R Markdown por Yihui Xie;
+* <https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf> Cheat Sheet sobre R Markdown. 
+
+As possibilidades são imensas, mas podemos facilmente formatar o texto, e.g.:
+
+1. itálico: *itálico*
+2. bold: **bold**
+3. bold e itálico: ***bold***
+
+Quando pressionamos o botão **Knit** dentro do RStudio, o ".Rmd" vai ser compilado, gerando um ".html" (html por defeito) com o mesmo nome. 
+
+Este documento que está a ler é disponibilizado como um *template*. Ao comparar este ".Rmd" com o ".html" que é criado a partir dele poderá perceber como funciona o R Markdown.
+
+Note-se em particular que o resultado de um relatório dinâmico vai poder incluir:
+
+* conteúdo escrito
+* código R
+* output de código R
+* conteudo externo, e.g. figuras externas
+
+Isto que está a ler é conteudo escrito e o código encontra-se no que se denominam *code chuncks*. O output do código só o vê depois de compilar o documento (experimente fazê-lo depois de ler isto). Para criar um *chunk* de código temos de o indicar assim:
+
+```{r castor}
+summary(beaver1)
+```
+
+Note-se que o output foi criado pela função do R `summary`, que permite visualizar um sumário do objecto que colocamos como seu argumento (ou seja, o argumento é o que está dentro dos parentesis!). O *chunk* acima mostra um sumário do objecto `badger1` sobre um conjunto de dados que vem por default na instalação base do R. Se quiser saber mais sobre este conjunto de dados, do package `datsets`, basta chamar a ajuda do R. Para tal poderá escrever na linha de comandos `?badger1`. Esta forma de pedir ajuda é válida para qualquer tipo de objecto ou função do R. Experimente!
+
+Se quisermos introduzir uma figura externa, podemos fazê-lo de diversas maneiras, mas esta é a mais simples
+
+![](rimage.jpg)
+
+esta figura foi retirada de um post sobre R: https://towardsdatascience.com/a-complete-guide-to-learn-r-29e691c61d1
+
+Para incluir um gráfico de R no seu relatório dinâmico basta... criar um gráfico num *chunck*, por exemplo, assim
+
+```{r castor2}
+plot(beaver1$time,beaver1$temp)
+```
+
+neste gráfico temos representada a temperatura de um castor ao longo de cerca de dois dias. Repare que se quisermos, podemos ter no relatório dinâmico valores dinâmicos, ou seja, que se alteram quando os dados são alterados. Por exemplo, o dobro da temperatura mínima do castor foi de `r 2*min(beaver1$temp)` e a temperatura máxima foi `r max(beaver1$temp)`, sendo que a sua média foi `r mean(beaver1$temp)`. Note-se que podemos arredondar os valores para ficarem mais bonitos no texto, por exemplo, a média aparecer como `r round(mean(beaver1$temp),1)`. 
+
+Veja no ".Rmd" como para criar estes valores dinâmicos temos de usar "r expressão" dentro de aspas (num teclado em portugês, estas "aspas" correspondem ao acento grave) onde a `expressão` é o código de R que gera o valor.
+
+De notar que a opção `echo = FALSE` pode ser adicionada a um *chunk* para que o código não seja visualizado, mas o seu *output* sim
+
+```{r testeplot, echo=FALSE}
+hist(rnorm(100))
+```
+
+Se está a ler o ".html", apesar de ver um gráfico acima (um histograma de 100 números pseudo-aleatórios Gaussianos), não vêmos o código que o gerou, esse só se consegue ver no ".Rmd".
+
+Vejamos agora um exemplo do dinamismo destes relatórios. Imagine que geramos 10 numeros pseudo-aleatórios Gaussianos
+
+```{r}
+set.seed(123)#use ?set.seed para descobrir o que faz esta função!
+x <- rnorm(100)
+```
+
+Podemos fazer a soma destes números
+
+```{r}
+sum(x)
+```
+
+Neste momento, se alterarmos os dados que estão no objecto `x`, por exemplo substituindo o primeiro valor por um novo número
+
+```{r}
+x[1] <- 100
+```
+
+o mesmo código irá criar um novo *output*
+
+```{r}
+sum(x)
+```
+
+uma vez que os dados mudaram.
+
+Agora podemos antecipar uma das grandes vantagens dos documentos dinâmicos. cada vez que os seus dados base mudarem, já não tem de repetir o seu relatório, basta recompilar o documento, e já está - tudo actualizado para a ultima versão dos dados!
+
+Se quisermos ver código mas sem este ser executado, útil por exemplo se tivermos um erro no código, podemos usar a opção `eval = FALSE`, como por exemplo
+
+```{r eval = FALSE}
+#este código tem um erro: devia ser plot e não prot!
+prot(rnorm(100))
+```
+
+Note-se que o `#` tem um efeito diferente no texto corrido e nos *chunks*:
+
+* em *chuncks*, é processado pelo R, logo é interpretado como um comentário, que não é portanto implementado (é mesmo um comentário, apenas os humanos o conseguem "ler")
+* no texto, indica um cabeçalho, de nível 1 `#`, nível 2 `##`, nível 3 `###`, e assim sucessivamente.
+
+Assim sendo, vamos de seguida criar secções e sub-secções para ilustrar esta capacidade.
+
+## Sugestões são bem vindas
+
+Se tiver sugestões a fazer sobre este documento, que outras capacidades do R Markdown poderiam ser ilustradas aqui de forma simples, etc., por favor envie-nos os seus comentários.
+
+# O meu material
+
+A partir daqui o ficheiro é seu, poderá escrever tudo o que aprender no dia de hoje! E poderá usar este documento para novas aventuras, fazendo um *copy-paste* deste e criando novo conteudo. Aventure-se, o céu é o limite!!!
+
+Foram criadas 3 secções para cada um dos exercícios previstos, mas na verdade, este espaço é agora seu. Construa sobre ele.
+
+## Exercício 1
+
+E aqui vai ficar o texto - pois vai
+
+```{r}
+#e aqui um code chunk!
+
+```
+
+## Exercício 2
+
+E aqui vai ficar o texto
+
+```{r}
+#e aqui um code chunk!
+
+```
+
+## Exercício 3
+
+E aqui vai ficar o texto
+
+```{r}
+#e aqui um code chunk!
+
+```

@@ -1,0 +1,8 @@
+# Importacao dos dados em formato .csv
+fogos <- read.csv("FOGOS_1980_2000.csv", header = TRUE, sep=";", dec = ",", na.strings = "")
+
+sort(table(fogos$Ano))
+
+par(mfrow=c(1,2))
+with(fogos[fogos$Ano==1980,],plot(fogos$x,fogos$y))
+with(fogos[fogos$Ano==1998,],plot(fogos$x,fogos$y))
